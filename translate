@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+
+"""
+Google Translator cmd client.
+
+This will translate arbitary strings in any language using
+google translator. (By parsing HTML)"""
+
+from bs4 import BeautifulSoup
+import requests
+
+rc = requests.get('https://translate.google.com/#auto/en/asdfasdfasdf')
+html = rc.text
+
+soup = BeautifulSoup(html, 'html.parser')
+print(soup.find(id='result_box'))
