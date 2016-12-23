@@ -19,8 +19,14 @@ def getHtml(text, origin_lang='auto', dest_lang='en'):
 
 
 def filterTranslation(html):
+    def processContents(c):
+        if c.name == 'br':
+            return '\n'
+        else:
+            return c.contents[0]
+    
     soup = BeautifulSoup(html, 'html.parser')
-    return ' '.join([''.join(x.contents) for x in soup.find(id='result_box').findChildren()])
+    return ' '.join([processContents(x) for x in soup.find(id='result_box').findChildren()])
 
 
 def main():
