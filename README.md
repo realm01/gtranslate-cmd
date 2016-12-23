@@ -19,6 +19,9 @@ $ translate -d ru 'Hi, how are you?'
 
 # translate <file> to french
 $ cat <file> | translate -d fr
+
+# show all options
+$ translate --help
 ```
 
 License
