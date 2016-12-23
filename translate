@@ -7,10 +7,10 @@ This will translate arbitary strings in any language using
 google translator. (By parsing HTML)"""
 
 from bs4 import BeautifulSoup
-import requests
+from selenium import webdriver
 
-rc = requests.get('https://translate.google.com/#auto/en/asdfasdfasdf')
-html = rc.text
+driver = webdriver.PhantomJS()
+driver.get('https://translate.google.com/#auto/de/this%20is%20just%20a%20nice%20test')
 
-soup = BeautifulSoup(html, 'html.parser')
+soup = BeautifulSoup(driver.page_source, 'html.parser')
 print(soup.find(id='result_box'))
