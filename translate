@@ -10,13 +10,18 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 import argparse
 import sys
+import signal
 
 
 def getHtml(text, origin_lang='auto', dest_lang='en'):
     driver = webdriver.PhantomJS()
     driver.get('https://translate.google.com/#{origin}/{dest}/{text}'.format(text=text, origin=origin_lang, dest=dest_lang))
+    text = driver.page_source
     
-    return driver.page_source
+    driver.service.process.send_signal(signal.SIGTERM)
+    driver.quit()
+    
+    return text
 
 
 def filterTranslation(html):
