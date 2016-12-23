@@ -9,6 +9,7 @@ google translator. (By parsing HTML)"""
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import argparse
+import sys
 
 
 def getHtml(text, origin_lang='auto', dest_lang='en'):
@@ -31,12 +32,19 @@ def filterTranslation(html):
 
 def main():
     parser = argparse.ArgumentParser(description='Translate arbitary text in any language.')
-    parser.add_argument('text', help='Text which should get translated.')
+    if sys.stdin.isatty():
+        parser.add_argument('text', help='Text which should get translated.', default=sys.stdin)
+
     parser.add_argument('-o', dest='origin_lang', help='Origin language eg. de, en, fr, auto (default: auto)', default='auto')
     parser.add_argument('-d', dest='dest_lang', help='Destination language eg. de, en, fr (default: de)', default='de')
     args = parser.parse_args()
+
+    try:
+        text = args.text
+    except:
+        text = sys.stdin.readlines()[0]
     
-    print(filterTranslation(getHtml(args.text, args.origin_lang, args.dest_lang)))
+    print(filterTranslation(getHtml(text, args.origin_lang, args.dest_lang)))
     
 
 if __name__ == "__main__":
