@@ -47,7 +47,7 @@ def main():
     try:
         text = args.text
     except:
-        text = sys.stdin.readlines()[0]
+        text = ''.join(sys.stdin.readlines())
     
     print(filterTranslation(getHtml(text, args.origin_lang, args.dest_lang)))
     
