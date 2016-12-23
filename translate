@@ -10,15 +10,18 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 import argparse
 
+
 def getHtml(text, origin_lang='auto', dest_lang='en'):
     driver = webdriver.PhantomJS()
     driver.get('https://translate.google.com/#{origin}/{dest}/{text}'.format(text=text, origin=origin_lang, dest=dest_lang))
     
     return driver.page_source
 
+
 def filterTranslation(html):
     soup = BeautifulSoup(html, 'html.parser')
-    return soup.find(id='result_box').find('span').contents[0]
+    return ' '.join([''.join(x.contents) for x in soup.find(id='result_box').findChildren()])
+
 
 def main():
     parser = argparse.ArgumentParser(description='Translate arbitary text in any language.')
@@ -28,6 +31,7 @@ def main():
     args = parser.parse_args()
     
     print(filterTranslation(getHtml(args.text, args.origin_lang, args.dest_lang)))
+    
 
 if __name__ == "__main__":
     main()
