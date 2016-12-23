@@ -8,9 +8,28 @@ google translator. (By parsing HTML)"""
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
+import argparse
 
-driver = webdriver.PhantomJS()
-driver.get('https://translate.google.com/#auto/de/this%20is%20just%20a%20nice%20test')
+def getHtml(text, origin_lang='auto', dest_lang='en'):
+    driver = webdriver.PhantomJS()
+    driver.get('https://translate.google.com/#{origin}/{dest}/{text}'.format(text=text, origin=origin_lang, dest=dest_lang))
+    
+    return driver.page_source
 
-soup = BeautifulSoup(driver.page_source, 'html.parser')
-print(soup.find(id='result_box'))
+def filterTranslation(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    return soup.find(id='result_box').find('span').contents[0]
+
+def main():
+    parser = argparse.ArgumentParser(description='Translate arbitary text in any language.')
+    parser.add_argument('text', help='Text which should get translated.')
+    parser.add_argument('-o', dest='origin_lang', help='Origin language eg. de, en, fr, auto (default: auto)', default='auto')
+    parser.add_argument('-d', dest='dest_lang', help='Destination language eg. de, en, fr (default: de)', default='de')
+    args = parser.parse_args()
+    
+    print(filterTranslation(getHtml(args.text, args.origin_lang, args.dest_lang)))
+
+if __name__ == "__main__":
+    main()
+    
+
