@@ -1,15 +1,24 @@
 gtranslate-cmd
 --------------
 
-This is a command line tool for translating text using the [Google Translator](https://translate.google.com "Google Translator"). The way this is done is very primitive, because it uses PhantomJS to load the page and then boutifulsoup to filter the correct HTML tags. The reason for this is that google uses AJAX to postload the translated text, so it is required to use a browser which executes javascript. (python-requests cannot do this and the official google translate API is a paid service.)
+This is a command line tool for translating text using the [Google Translator](https://translate.google.com "Google Translator"). The way this is done is very primitive, because it uses PhantomJS to load the page and then beautifulsoup to filter the correct HTML tags. The reason for this is that google uses AJAX to postload the translated text, so it is required to use a browser which executes javascript. (python-requests cannot do this and the official google translate API is a paid service.)
 
 ### Installation
 ```sh
 # PhandomJS
 $ npm install
 
-# selenium and boutifulsoup
+# selenium and beautifulsoup
 $ pip install -r requirements.txt
+```
+
+### Usage
+```sh
+# translate to russian
+$ translate -d ru 'Hi, how are you?'
+
+# translate <file> to french
+$ cat <file> | translate -d fr
 ```
 
 License
