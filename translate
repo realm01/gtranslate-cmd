@@ -14,28 +14,31 @@ import signal
 
 
 def getHtml(text, origin_lang='auto', dest_lang='en'):
+    """Run phantomjs and return the HTML of translate.google.com (After loading the AJAX)."""
     driver = webdriver.PhantomJS()
     driver.get('https://translate.google.com/#{origin}/{dest}/{text}'.format(text=text, origin=origin_lang, dest=dest_lang))
     text = driver.page_source
-    
+
     driver.service.process.send_signal(signal.SIGTERM)
     driver.quit()
-    
+
     return text
 
 
 def filterTranslation(html):
+    """Filter the translated text from the html."""
     def processContents(c):
         if c.name == 'br':
             return '\n'
         else:
             return c.contents[0]
-    
+
     soup = BeautifulSoup(html, 'html.parser')
     return ' '.join([processContents(x) for x in soup.find(id='result_box').findChildren()])
 
 
 def main():
+    """Main function of the application."""
     parser = argparse.ArgumentParser(description='Translate arbitary text in any language.')
     if sys.stdin.isatty():
         parser.add_argument('text', help='Text which should get translated.', default=sys.stdin)
@@ -48,11 +51,9 @@ def main():
         text = args.text
     except:
         text = ''.join(sys.stdin.readlines())
-    
+
     print(filterTranslation(getHtml(text, args.origin_lang, args.dest_lang)))
-    
+
 
 if __name__ == "__main__":
     main()
-    
-
