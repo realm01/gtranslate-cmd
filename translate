@@ -8,9 +8,38 @@ google translator. (By parsing HTML)"""
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
+import requests
 import argparse
 import sys
 import signal
+from collections import OrderedDict
+
+
+class GetGoogleTranslationError(Exception):
+    """Will be thrown if translate cannot get contact translate.google.com."""
+
+    def __init__(self):
+        """Ctor of GetGoogleTranslationError."""
+        self.value = "Failed to get content from translate.google.com"
+
+    def __str__(self):
+        """Textual representation of this class."""
+        return self.value
+
+
+def getLanguages():
+    """Return a dict with all available languages (abbreviation:full)."""
+    rc = requests.get("https://translate.google.com")
+    if(rc.status_code != 200):
+        raise GetGoogleTranslationError()
+
+    html = rc.text
+    soup = BeautifulSoup(html, 'html.parser')
+    languages_unfiltered = soup.find(id='gt-sl')
+    languages = {child.get('value'): child.contents[0] for child in languages_unfiltered.findChildren() if child.get('value') != 'separator'}
+    languages = OrderedDict(sorted(languages.items(), key=lambda x: x[0]))
+
+    return languages
 
 
 def getHtml(text, origin_lang='auto', dest_lang='en'):
@@ -41,18 +70,32 @@ def main():
     """Main function of the application."""
     parser = argparse.ArgumentParser(description='Translate arbitary text in any language.')
     if sys.stdin.isatty():
-        parser.add_argument('text', help='Text which should get translated.', default=sys.stdin)
+        parser.add_argument('text', help='Text which should get translated.', nargs='?', default=None)
 
     parser.add_argument('-o', dest='origin_lang', help='Origin language eg. de, en, fr, auto (default: auto)', default='auto')
     parser.add_argument('-d', dest='dest_lang', help='Destination language eg. de, en, fr (default: de)', default='de')
+    parser.add_argument('--languages', dest='languages', action='store_true', help='Print all available languages')
     args = parser.parse_args()
 
-    try:
-        text = args.text
-    except:
-        text = ''.join(sys.stdin.readlines())
+    if args.languages:
+        try:
+            languages = getLanguages()
+            for abbreviation, full in languages.items():
+                print(abbreviation + ' : ' + full)
 
-    print(filterTranslation(getHtml(text, args.origin_lang, args.dest_lang)))
+        except GetGoogleTranslationError as e:
+            print(e)
+    else:
+        if args.text is None:
+            parser.print_help()
+            return
+
+        try:
+            text = args.text
+        except:
+            text = ''.join(sys.stdin.readlines())
+
+        print(filterTranslation(getHtml(text, args.origin_lang, args.dest_lang)))
 
 
 if __name__ == "__main__":
