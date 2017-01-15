@@ -1,0 +1,22 @@
+{
+  "name": "gtranslate",
+  "version": "1.0.0",
+  "description": "nodejs implementation of gtranslate",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/realm01/gtranslate-cmd.git"
+  },
+  "author": "Anastassios Martakos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/realm01/gtranslate-cmd/issues"
+  },
+  "dependencies": {
+    "google-translate-token": "latest"
+  },
+  "homepage": "https://github.com/realm01/gtranslate-cmd#readme"
+}
