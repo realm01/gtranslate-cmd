@@ -16,7 +16,8 @@
     "url": "https://github.com/realm01/gtranslate-cmd/issues"
   },
   "dependencies": {
-    "google-translate-token": "latest"
+    "google-translate-api": "latest",
+    "argparse": "latest"
   },
   "homepage": "https://github.com/realm01/gtranslate-cmd#readme"
 }

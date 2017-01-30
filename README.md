@@ -24,6 +24,10 @@ $ cat <file> | translate -d fr
 $ translate --help
 ```
 
+Used Libraries
+--------------
+ - https://github.com/matheuss/google-translate-token
+
 License
 -------
 >Copyright (c) 2016 Anastassios Martakos
