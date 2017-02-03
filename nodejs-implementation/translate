@@ -5,7 +5,7 @@ const argparse = require('argparse');
 
 const parser = new argparse.ArgumentParser({
   addHelp: true,
-  description: "translator"
+  description: 'translator'
 });
 
 parser.addArgument(
@@ -16,7 +16,7 @@ parser.addArgument(
     defaultValue: 'auto',
     required: false
   }
-)
+);
 
 parser.addArgument(
   [ '-d', '--destination' ],
@@ -26,7 +26,7 @@ parser.addArgument(
     defaultValue: 'en',
     required: false
   }
-)
+);
 
 parser.addArgument(
   [ '-l', '--languages' ],
@@ -37,7 +37,7 @@ parser.addArgument(
     action: 'storeTrue',
     required: false
   }
-)
+);
 
 parser.addArgument(
   [ '-t', '--text' ],
@@ -46,20 +46,20 @@ parser.addArgument(
     type: String,
     required: false
   }
-)
+);
 
 const args = parser.parseArgs();
 
-if(args.languages) {
-  for(var key in translate.languages) {
-    if(key != 'isSupported' && key != 'getCode') {
+if (args.languages) {
+  for (var key in translate.languages) {
+    if (key !== 'isSupported' && key !== 'getCode') {
       console.log(key + ' : ' + translate.languages[key]);
     }
   }
   process.exit(0);
 }
 
-function gtranslate(line) {
+function gtranslate (line) {
   translate(line, {from: args.origin, to: args.destination}).then(res => {
     console.log(res.text);
   }).catch(err => {
@@ -69,29 +69,29 @@ function gtranslate(line) {
 
 var toTranslate = '';
 
-if(process.stdin.isTTY) {
-  if(args.text == null) {
+if (process.stdin.isTTY) {
+  if (args.text == null) {
     console.log('argument text is required');
     process.exit(1);
-  }else{
+  } else {
     toTranslate = args.text;
   }
-  
-  if(toTranslate == '') {
+
+  if (toTranslate === '') {
     console.log('nothing to translate');
     process.exit(1);
   }
-  
+
   gtranslate(toTranslate);
-}else{
+} else {
   process.stdin.resume();
   process.stdin.setEncoding('utf8');
-  
-  process.stdin.on('data', function(data) {
+
+  process.stdin.on('data', function (data) {
     toTranslate += data;
   });
-  
-  process.stdin.on('end', function(data) {
+
+  process.stdin.on('end', function (data) {
     gtranslate(toTranslate);
   });
 }

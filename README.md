@@ -1,10 +1,18 @@
 gtranslate-cmd
 --------------
 
-This is a command line tool for translating text using the [Google Translator](https://translate.google.com "Google Translator"). The way this is done is very primitive, because it uses PhantomJS to load the page and then beautifulsoup to filter the correct HTML tags. The reason for this is that google uses AJAX to postload the translated text, so it is required to use a browser which executes javascript. (python-requests cannot do this and the official google translate API is a paid service.)
+This is a command line tool for translating text using the [Google Translator](https://translate.google.com "Google Translator").
+
+There are two versions:
+
+The nodejs version, which is faster and has very light dependencies and the python version which is slow and has heavy dependencies. In the nodejs version the [Google Translate API NPM Module](https://github.com/matheuss/google-translate-api) is used and in the python version [PhantomJS](http://phantomjs.org/) is used to gather the translated text.
 
 ### Installation
+Python version:
+
 ```sh
+$ cd python-implementation
+
 # PhandomJS
 $ npm install
 
@@ -12,13 +20,30 @@ $ npm install
 $ pip install -r requirements.txt
 ```
 
+Nodejs version:
+
+```sh
+$ cd nodejs-implementation
+$ npm install
+```
+
 ### Usage
+The python and the nodejs version work the same except with one difference: in the nodejs version you have to put `-t` before the text you want to translate.
+
 ```sh
 # translate to russian
+#
+# python
 $ translate -d ru 'Hi, how are you?'
+
+# nodejs
+$ translate -d ru -t 'Hi, how are you?'
 
 # translate <file> to french
 $ cat <file> | translate -d fr
+
+# show all available languages
+$ translate --languages
 
 # show all options
 $ translate --help
@@ -26,7 +51,14 @@ $ translate --help
 
 Used Libraries
 --------------
- - https://github.com/matheuss/google-translate-token
+For the nodejs version:
+ - [Google Translate API NPM Module](https://github.com/matheuss/google-translate-api)
+ - [argsparse for nodejs](https://www.npmjs.com/package/argparse)
+
+For the python version: (very heavy dependencies)
+ - [PhantomJS](http://phantomjs.org/)
+ - [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/)
+ - [Requests](http://docs.python-requests.org/en/master/)
 
 License
 -------
