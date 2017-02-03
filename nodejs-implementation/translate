@@ -1,0 +1,97 @@
+#!/usr/bin/env node
+
+const translate = require('google-translate-api');
+const argparse = require('argparse');
+
+const parser = new argparse.ArgumentParser({
+  addHelp: true,
+  description: "translator"
+});
+
+parser.addArgument(
+  [ '-o', '--origin' ],
+  {
+    help: 'origin language, default: auto',
+    type: String,
+    defaultValue: 'auto',
+    required: false
+  }
+)
+
+parser.addArgument(
+  [ '-d', '--destination' ],
+  {
+    help: 'destination language, default: en',
+    type: String,
+    defaultValue: 'en',
+    required: false
+  }
+)
+
+parser.addArgument(
+  [ '-l', '--languages' ],
+  {
+    help: 'show all available languages',
+    type: Boolean,
+    defaultValue: false,
+    action: 'storeTrue',
+    required: false
+  }
+)
+
+parser.addArgument(
+  [ '-t', '--text' ],
+  {
+    help: 'text which should get translated',
+    type: String,
+    required: false
+  }
+)
+
+const args = parser.parseArgs();
+
+if(args.languages) {
+  for(var key in translate.languages) {
+    if(key != 'isSupported' && key != 'getCode') {
+      console.log(key + ' : ' + translate.languages[key]);
+    }
+  }
+  process.exit(0);
+}
+
+function gtranslate(line) {
+  translate(line, {from: args.origin, to: args.destination}).then(res => {
+    console.log(res.text);
+  }).catch(err => {
+    console.log(err);
+  });
+}
+
+var toTranslate = '';
+
+if(process.stdin.isTTY) {
+  if(args.text == null) {
+    console.log('argument text is required');
+    process.exit(1);
+  }else{
+    toTranslate = args.text;
+  }
+  
+  if(toTranslate == '') {
+    console.log('nothing to translate');
+    process.exit(1);
+  }
+  
+  gtranslate(toTranslate);
+}else{
+  process.stdin.resume();
+  process.stdin.setEncoding('utf8');
+  
+  process.stdin.on('data', function(data) {
+    toTranslate += data;
+  });
+  
+  process.stdin.on('end', function(data) {
+    gtranslate(toTranslate);
+  });
+}
