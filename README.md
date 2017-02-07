@@ -49,6 +49,27 @@ $ translate --languages
 $ translate --help
 ```
 
+### Integration into the shell
+Assuming you always want the same output language you can create an alias in your favorite shell:
+
+Bash:
+```sh
+# ~/.bash_profile
+
+alias translate="<path-to>/gtranslate-cmd/nodejs-implementation/translate -d de -t"
+```
+
+Powershell:
+```sh
+# C:\Users\<username>\Documents\WindowsPowerShell\profile.ps1
+
+function translate_proxy($text) {
+    Invoke-Expression "& node <path-to>\gtranslate-cmd\nodejs-implementation\translate -d de -t '$text'"
+}
+
+New-Alias -Force translate translate_proxy
+```
+
 Used Libraries
 --------------
 For the nodejs version:
